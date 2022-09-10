@@ -1,4 +1,5 @@
 use hidapi::{HidApi, HidDevice, HidError};
+use std::time::{Duration, Instant};
 
 // Luxafor API constants
 const DEVICE_VENDOR_ID: u16 = 0x04d8;
@@ -85,6 +86,35 @@ impl USBDevice {
             Color::Magenta => (255, 0, 255),
             Color::Custom { red, green, blue } => (red, green, blue),
         }
+    }
+
+    /// Blocking read on the device and returns the length of the payload
+    pub fn read(&self, buffer: &mut[u8]) -> Result<usize, HidError> {
+        let res = self.hid_device.read(&mut buffer[..])?;
+        return Ok(res);
+    }
+
+    /// Same as read but blocking is termianted after the timeout
+    pub fn read_timeout(&self, buffer: &mut[u8], timeout: i32) -> Result<usize, HidError> {
+        let res = self.hid_device.read_timeout(&mut buffer[..], timeout)?;
+        return Ok(res);
+    }
+
+    /// Checks whether the mute button is pressed for a period of time
+    pub fn is_button_pressed(&self, timeout: u64) -> bool {
+        let mut buffer = [0u8; 8];
+
+        let mut res = self.read_timeout(&mut buffer[..], 10).unwrap();
+        let timestamp = Instant::now();
+        if &buffer[..res] == [131, 1, 0, 0, 0, 0, 0, 0] {
+            res = self.read(&mut buffer[..]).unwrap();
+            if &buffer[..res] == [131, 0, 0, 0, 0, 0, 0, 0]
+                && timestamp.elapsed() > Duration::from_millis(timeout)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /// Bytes are written to the usb device
