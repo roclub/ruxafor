@@ -2,9 +2,22 @@
 name = "ruxafor"
 version = "0.1.0"
 edition = "2021"
+authors = ["Framtale <theys.carstensen@roclub.com>"]
+homepage = "https://www.roclub.com/"
+description = "Control luxafor light with rust"
+repository = "https://github.com/roclub/ruxafor"
+keywords = ["luxafor", "rust", "hidapi"]
+categroies = ["hardware-support"]
+license = "MIT"
+license-path = "LICENSE.md"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+name = "ruxafor"
+path = "src/lib.rs"
+crate-type = ["lib"]
+
 [dependencies]
 hidapi = "1.4.2"
-openssl-sys = "0.9.75"

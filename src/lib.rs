@@ -1,5 +1,8 @@
 use hidapi::{HidApi, HidDevice, HidError};
+<<<<<<< HEAD
 use std::time::{Duration, Instant};
+=======
+>>>>>>> main
 
 // Luxafor API constants
 const DEVICE_VENDOR_ID: u16 = 0x04d8;
@@ -88,6 +91,7 @@ impl USBDevice {
         }
     }
 
+<<<<<<< HEAD
     /// Blocking read on the device and returns the length of the payload
     pub fn read(&self, buffer: &mut[u8]) -> Result<usize, HidError> {
         let res = self.hid_device.read(&mut buffer[..])?;
@@ -117,6 +121,8 @@ impl USBDevice {
         return false;
     }
 
+=======
+>>>>>>> main
     /// Bytes are written to the usb device
     fn write(&self, buffer: &[u8]) -> Result<(), HidError> {
         self.hid_device.write(buffer)?;
