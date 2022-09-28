@@ -7,7 +7,15 @@ const DEVICE_PRODUCT_ID: u16 = 0xf372;
 
 const HID_REPORT_ID: u8 = 0;
 const LED_ALL: u8 = 255;
+
 const MODE_STATIC: u8 = 1;
+const MODE_STROBE: u8 = 3;
+const MODE_CIRCLING: u8 = 4;
+
+const CIRCULAR_LENGTH_SHORT: u8 = 1;
+const CIRCULAR_LENGTH_LONG: u8 = 2;
+const CIRCULAR_LENGTH_OVERLAPPING_SHORT: u8 = 3;
+const CIRCULAR_LENGTH_OVERLAPPING_LONG: u8 = 4;
 
 #[derive(Clone, Debug)]
 pub enum Color {
@@ -23,6 +31,19 @@ pub enum Color {
         green: u8,
         blue: u8,
     },
+}
+
+/// Length of the circular section used in the circular mode
+#[derive(Clone, Debug)]
+pub enum Circular_length {
+    /// Two LEDS are used
+    Short,
+    /// Four LEDS are used
+    Long,
+    /// Two LEDS are used, but they do not wait till the next wave starts
+    ShortOverlapping,
+    /// Four LEDS are used, but they do not wait till the next wave starts
+    LongOverlapping,
 }
 
 pub struct USBDiscovery {
@@ -127,6 +148,26 @@ impl USBDevice {
     pub fn set_static_color(&self, color: Color) -> Result<(), HidError> {
         let (r, g, b) = self.color_to_bytes(color);
         self.write(&[HID_REPORT_ID, MODE_STATIC, self.target_led, r, g, b])?;
+        Ok(())
+    }
+
+    /// Sets the the luxafor light to a circling color mode 
+    pub fn set_circling_color(&self, color: Color, pattern: Circular_length, circling_rate: u8, iterations: u8) -> Result<(), HidError> {
+        let pattern = match pattern {
+            Circular_length::Short => CIRCULAR_LENGTH_SHORT,
+            Circular_length::Long => CIRCULAR_LENGTH_LONG,
+            Circular_length::ShortOverlapping => CIRCULAR_LENGTH_OVERLAPPING_SHORT,
+            Circular_length::LongOverlapping => CIRCULAR_LENGTH_OVERLAPPING_LONG,
+        };
+        let (r, g, b) = self.color_to_bytes(color);
+        self.write(&[HID_REPORT_ID, MODE_CIRCLING, pattern, r, g, b, 0x00, iterations, circling_rate])?;
+        Ok(())
+    }
+
+    /// Sets the luxafor light to a strobing pattern
+    pub fn set_strobe_color(&self, color: Color, strobe_speed: u8, iterations: u8) -> Result<(), HidError> {
+        let (r, g, b) = self.color_to_bytes(color);
+        self.write(&[HID_REPORT_ID, MODE_STROBE, self.target_led, r, g, b, strobe_speed, 0x00, iterations])?;
         Ok(())
     }
 }
