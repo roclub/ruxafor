@@ -1,7 +1,7 @@
 use hidapi::{HidApi, HidDevice, HidError};
 use std::time::{Duration, Instant};
 
-// Luxafor API constants
+// Luxafor API constants.
 const DEVICE_VENDOR_ID: u16 = 0x04d8;
 const DEVICE_PRODUCT_ID: u16 = 0xf372;
 
@@ -36,23 +36,25 @@ pub enum Color {
     },
 }
 
-/// Length of the circular section used in the circular mode
+/// Length of the circular section used in the circular mode.
 #[derive(Clone, Debug)]
 pub enum CircularLength {
     /// Two LEDS are used
     Short,
     /// Four LEDS are used
     Long,
-    /// Two LEDS are used, but they do not wait till the next wave starts
+    /// Two LEDS are used, but they do not wait till the next wave starts.
     ShortOverlapping,
-    /// Four LEDS are used, but they do not wait till the next wave starts
+    /// Four LEDS are used, but they do not wait till the next wave starts.
     LongOverlapping,
 }
 
+/// USBDiscovery is used to discover the Luxafor device using the HID descriptor.
 pub struct USBDiscovery {
     hid_api: HidApi,
 }
 
+/// Implementation of the luxafor USB device.
 pub struct USBDevice {
     hid_device: HidDevice,
     id: String,
@@ -60,13 +62,13 @@ pub struct USBDevice {
 }
 
 impl USBDiscovery {
-    /// Returns a USBDiscovery object
+    /// Returns a USBDiscovery object.
     pub fn new() -> Result<Self, HidError> {
         let hid_api = HidApi::new()?;
         return Ok(Self { hid_api });
     }
     
-    /// Opens a HID device using it's vendor id and product id
+    /// Opens a HID device using it's vendor id and product id.
     pub fn device(&self) -> Result<USBDevice, HidError> {
         let open_hid = self.hid_api.open(DEVICE_VENDOR_ID, DEVICE_PRODUCT_ID)?;
         return Ok(USBDevice::new(open_hid));
@@ -74,7 +76,7 @@ impl USBDiscovery {
 }
 
 impl USBDevice {
-    /// Creates a USBDevice object with USB dependent identifiers
+    /// Creates a USBDevice object with USB dependent identifiers.
     fn new(hid_device: HidDevice) -> Self {
         let id = format!(
             "{}::{}::{}",
@@ -98,7 +100,7 @@ impl USBDevice {
         }
     }
 
-    /// Resolves the specified color to a rgb value
+    /// Resolves the specified color to a rgb value.
     fn color_to_bytes(&self, color: Color) -> (u8, u8, u8) {
         match color {
             Color::Red => (255, 0, 0),
@@ -112,19 +114,19 @@ impl USBDevice {
         }
     }
 
-    /// Blocking read on the device and returns the length of the payload
+    /// Blocking read on the device and returns the length of the payload.
     pub fn read(&self, buffer: &mut[u8]) -> Result<usize, HidError> {
         let res = self.hid_device.read(&mut buffer[..])?;
         return Ok(res);
     }
 
-    /// Same as read but blocking is termianted after the timeout
+    /// Same as read but blocking is termianted after the timeout.
     pub fn read_timeout(&self, buffer: &mut[u8], timeout: i32) -> Result<usize, HidError> {
         let res = self.hid_device.read_timeout(&mut buffer[..], timeout)?;
         return Ok(res);
     }
 
-     /// Checks whether the mute button is pressed for a period of time
+     /// Checks whether the mute button is pressed for a period of time.
      pub fn is_button_pressed(&self, timeout: i32, interval: u64) -> Result<bool, HidError> {
         let mut buffer = [0u8; 8];
 
@@ -141,8 +143,8 @@ impl USBDevice {
         return Ok(false);
     }
 
-    // TODO: Implement feeback using other light modes
-    /// Checks whether the mute button is pressed for a period of time and set strobing light as feedback after the timeout
+    /// **TODO**: Implement feeback using other light modes.
+    /// Checks whether the mute button is pressed for a period of time and set strobing light as feedback after the timeout.
     pub fn is_button_pressed_feedback(&self, timeout: i32, interval: u64, color: Color) -> Result<bool, HidError> {
         let mut buffer = [0u8; 8];
 
@@ -167,20 +169,20 @@ impl USBDevice {
         return Ok(false);
     }
 
-    /// Bytes are written to the usb device
+    /// Bytes are written to the usb device.
     fn write(&self, buffer: &[u8]) -> Result<(), HidError> {
         self.hid_device.write(buffer)?;
         Ok(())
     }
 
-    /// Sets a static luxafor light
+    /// Sets a static luxafor light.
     pub fn set_static_color(&self, color: Color) -> Result<(), HidError> {
         let (r, g, b) = self.color_to_bytes(color);
         self.write(&[HID_REPORT_ID, MODE_STATIC, self.target_led, r, g, b])?;
         Ok(())
     }
 
-    /// Sets the the luxafor light to a circling color mode 
+    /// Sets the the luxafor light to a circling color mode.
     pub fn set_circling_color(&self, color: Color, pattern: CircularLength, circling_rate: u8, iterations: u8) -> Result<(), HidError> {
         let pattern = match pattern {
             CircularLength::Short => CIRCULAR_LENGTH_SHORT,
@@ -193,7 +195,7 @@ impl USBDevice {
         Ok(())
     }
 
-    /// Sets the luxafor light to a strobing pattern
+    /// Sets the luxafor light to a strobing pattern.
     pub fn set_strobe_color(&self, color: Color, strobe_speed: u8, iterations: u8) -> Result<(), HidError> {
         let (r, g, b) = self.color_to_bytes(color);
         self.write(&[HID_REPORT_ID, MODE_STROBE, self.target_led, r, g, b, strobe_speed, 0x00, iterations])?;
