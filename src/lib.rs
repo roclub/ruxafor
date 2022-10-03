@@ -38,7 +38,7 @@ pub enum Color {
 
 /// Length of the circular section used in the circular mode
 #[derive(Clone, Debug)]
-pub enum Circular_length {
+pub enum CircularLength {
     /// Two LEDS are used
     Short,
     /// Four LEDS are used
@@ -181,12 +181,12 @@ impl USBDevice {
     }
 
     /// Sets the the luxafor light to a circling color mode 
-    pub fn set_circling_color(&self, color: Color, pattern: Circular_length, circling_rate: u8, iterations: u8) -> Result<(), HidError> {
+    pub fn set_circling_color(&self, color: Color, pattern: CircularLength, circling_rate: u8, iterations: u8) -> Result<(), HidError> {
         let pattern = match pattern {
-            Circular_length::Short => CIRCULAR_LENGTH_SHORT,
-            Circular_length::Long => CIRCULAR_LENGTH_LONG,
-            Circular_length::ShortOverlapping => CIRCULAR_LENGTH_OVERLAPPING_SHORT,
-            Circular_length::LongOverlapping => CIRCULAR_LENGTH_OVERLAPPING_LONG,
+            CircularLength::Short => CIRCULAR_LENGTH_SHORT,
+            CircularLength::Long => CIRCULAR_LENGTH_LONG,
+            CircularLength::ShortOverlapping => CIRCULAR_LENGTH_OVERLAPPING_SHORT,
+            CircularLength::LongOverlapping => CIRCULAR_LENGTH_OVERLAPPING_LONG,
         };
         let (r, g, b) = self.color_to_bytes(color);
         self.write(&[HID_REPORT_ID, MODE_CIRCLING, pattern, r, g, b, 0x00, iterations, circling_rate])?;
