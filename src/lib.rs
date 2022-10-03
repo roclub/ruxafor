@@ -202,3 +202,56 @@ impl USBDevice {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serial_test::serial;
+
+    // Unit tessts have to run serially instead of parallel because of the hidapi library.
+
+    #[test]
+    #[serial]
+    fn test_is_button_pressed() -> Result<(), HidError> {
+        let usb_discovery = USBDiscovery::new()?;
+        let usb_device = usb_discovery.device()?;
+        assert_eq!(usb_device.is_button_pressed(3000, 2000)?, false);
+        Ok(())
+    }
+
+    #[test]
+    #[serial]
+    fn test_is_button_pressed_feedback() -> Result<(), HidError> {
+        let usb_discovery = USBDiscovery::new()?;
+        let usb_device = usb_discovery.device()?;
+        assert_eq!(usb_device.is_button_pressed_feedback(3000, 2000, Color::Red)?, false);
+        Ok(())
+    }
+
+    #[test]
+    #[serial]
+    fn test_set_static_color() -> Result<(), HidError> {
+        let usb_discovery = USBDiscovery::new()?;
+        let usb_device = usb_discovery.device()?;
+        usb_device.set_static_color(Color::Red)?;
+        Ok(())
+    }
+
+    #[test]
+    #[serial]
+    fn test_set_circling_color() -> Result<(), HidError> {
+        let usb_discovery = USBDiscovery::new()?;
+        let usb_device = usb_discovery.device()?;
+        usb_device.set_circling_color(Color::Red, CircularLength::Short, 1, 1)?;
+        Ok(())
+    }
+
+    #[test]
+    #[serial]
+    fn test_set_strobe_color() -> Result<(), HidError> {
+        let usb_discovery = USBDiscovery::new()?;
+        let usb_device = usb_discovery.device()?;
+        usb_device.set_strobe_color(Color::Red, 1, 1)?;
+        Ok(())
+    }
+}
