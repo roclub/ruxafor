@@ -8,6 +8,9 @@ const DEVICE_PRODUCT_ID: u16 = 0xf372;
 const HID_REPORT_ID: u8 = 0;
 const LED_ALL: u8 = 255;
 
+const BUTTON_PRESSED: [u8; 8] = [131, 1, 0, 0, 0, 0, 0, 0];
+const BUTTON_RELEASED: [u8; 8] = [131, 0, 0, 0, 0, 0, 0, 0];
+
 const MODE_STATIC: u8 = 1;
 const MODE_STROBE: u8 = 3;
 const MODE_CIRCLING: u8 = 4;
@@ -17,7 +20,7 @@ const CIRCULAR_LENGTH_LONG: u8 = 2;
 const CIRCULAR_LENGTH_OVERLAPPING_SHORT: u8 = 3;
 const CIRCULAR_LENGTH_OVERLAPPING_LONG: u8 = 4;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Copy)]
 pub enum Color {
     Red,
     Green,
@@ -121,21 +124,47 @@ impl USBDevice {
         return Ok(res);
     }
 
-    /// Checks whether the mute button is pressed for a period of time
-    pub fn is_button_pressed(&self, timeout: u64) -> bool {
+     /// Checks whether the mute button is pressed for a period of time
+     pub fn is_button_pressed(&self, timeout: i32, interval: u64) -> Result<bool, HidError> {
         let mut buffer = [0u8; 8];
 
-        let mut res = self.read_timeout(&mut buffer[..], 10).unwrap();
+        let mut res = self.read_timeout(&mut buffer[..], timeout)?;
         let timestamp = Instant::now();
-        if &buffer[..res] == [131, 1, 0, 0, 0, 0, 0, 0] {
-            res = self.read(&mut buffer[..]).unwrap();
-            if &buffer[..res] == [131, 0, 0, 0, 0, 0, 0, 0]
-                && timestamp.elapsed() > Duration::from_millis(timeout)
+        if &buffer[..res] == BUTTON_PRESSED {
+            res = self.read(&mut buffer[..])?;
+            if &buffer[..res] == BUTTON_RELEASED
+                && timestamp.elapsed() > Duration::from_millis(interval)
             {
-                return true;
+                return Ok(true);
             }
         }
-        return false;
+        return Ok(false);
+    }
+
+    // TODO: Implement feeback using other light modes
+    /// Checks whether the mute button is pressed for a period of time and set strobing light as feedback after the timeout
+    pub fn is_button_pressed_feedback(&self, timeout: i32, interval: u64, color: Color) -> Result<bool, HidError> {
+        let mut buffer = [0u8; 8];
+
+        let mut res = self.read_timeout(&mut buffer[..], timeout)?;
+        let timestamp = Instant::now();
+        if &buffer[..res] == BUTTON_PRESSED {
+            loop {
+                if timestamp.elapsed() > Duration::from_millis(interval) {
+                    self.set_strobe_color(color, 3, 1)?;
+                    res = self.read(&mut buffer[..])?;
+                    if &buffer[..res] == BUTTON_RELEASED {
+                        return Ok(true);
+                    }
+                } else {
+                    res = self.read_timeout(&mut buffer[..], 1)?;
+                    if &buffer[..res] == BUTTON_RELEASED {
+                        break;
+                    }
+                }
+            }
+        }
+        return Ok(false);
     }
 
     /// Bytes are written to the usb device
