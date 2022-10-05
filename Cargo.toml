@@ -1,6 +1,6 @@
 [package]
 name = "ruxafor"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 authors = ["Framtale <theys.carstensen@roclub.com>"]
 homepage = "https://www.roclub.com/"
