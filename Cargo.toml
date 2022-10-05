@@ -1,6 +1,6 @@
 [package]
 name = "ruxafor"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 authors = ["Framtale <theys.carstensen@roclub.com>"]
 homepage = "https://www.roclub.com/"
@@ -19,5 +19,9 @@ name = "ruxafor"
 path = "src/lib.rs"
 crate-type = ["lib"]
 
+[dev-dependencies]
+serial_test = "*"
+
 [dependencies]
 hidapi = "1.4.2"
+serial_test = "0.9.0"
