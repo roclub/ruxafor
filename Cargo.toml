@@ -20,7 +20,7 @@ path = "src/lib.rs"
 crate-type = ["lib"]
 
 [dev-dependencies]
-serial_test = "*"
+serial_test = "0.9.0"
 
 [dependencies]
 hidapi = "1.4.2"

@@ -100,6 +100,11 @@ impl USBDevice {
         }
     }
 
+    /// Returns the USB device identifier.
+    pub fn id(&self) -> String {
+        self.id.clone()
+    }
+
     /// Resolves the specified color to a rgb value.
     fn color_to_bytes(&self, color: Color) -> (u8, u8, u8) {
         match color {
@@ -209,6 +214,15 @@ mod tests {
     use serial_test::serial;
 
     // Unit tessts have to run serially instead of parallel because of the hidapi library.
+
+    #[test]
+    #[serial]
+    fn test_discovery() -> Result<(), HidError> {
+        let usb_discovery = USBDiscovery::new()?;
+        let usb_device = usb_discovery.device()?;
+        println!("{}", usb_device.id());
+        Ok(())
+    }
 
     #[test]
     #[serial]
