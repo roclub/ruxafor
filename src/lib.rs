@@ -148,23 +148,22 @@ impl USBDevice {
         return Ok(false);
     }
 
-    /// **TODO**: Implement feeback using other light modes.
-    /// Checks whether the mute button is pressed for a period of time and set strobing light as feedback after the timeout.
-    pub fn is_button_pressed_feedback(&self, timeout: i32, interval: u64, color: Color) -> Result<bool, HidError> {
+     /// Checks whether the mute button is pressed for a period of time and set feedback_color as feedback after the timeout.
+     pub fn is_button_pressed_feedback(&self, timeout: i32, interval: u64, feedback_color: Color) -> Result<bool, HidError> {
         let mut buffer = [0u8; 8];
 
         let mut res = self.read_timeout(&mut buffer[..], timeout)?;
         let timestamp = Instant::now();
         if &buffer[..res] == BUTTON_PRESSED {
+            self.set_static_color(Color::White)?;
             loop {
+                res = self.read_timeout(&mut buffer[..], 1)?;
                 if timestamp.elapsed() > Duration::from_millis(interval) {
-                    self.set_strobe_color(color, 3, 1)?;
-                    res = self.read(&mut buffer[..])?;
+                    self.set_static_color(feedback_color)?;
                     if &buffer[..res] == BUTTON_RELEASED {
                         return Ok(true);
                     }
                 } else {
-                    res = self.read_timeout(&mut buffer[..], 1)?;
                     if &buffer[..res] == BUTTON_RELEASED {
                         break;
                     }
