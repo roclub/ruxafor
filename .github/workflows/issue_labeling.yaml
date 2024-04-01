@@ -21,7 +21,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
           NUMBER: ${{ github.event.issue.number }}
-          LABELS: triage/needed, time/needed
+          # add new label with sperator: ,
+          # no whitespaces
+          LABELS: triage/needed,time/needed
 
       - name: Add comment for instructions
         run: gh issue comment "$NUMBER" --body "$BODY"
