@@ -71,7 +71,7 @@ jobs:
               issue_number: issueNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Your PR has not been linked to an issue. Please link the corresponding issue in the sidebar or use [keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword) in your PR, then close and reopen the PR. For more information, refer to the GitHub principles and conventions defined in [Git & GitHub & GitFlow | Notion](https://www.notion.so/roclub/Git-GitHub-GitFlow-85cbb825be004d4d8b8ff6c0fa12204b%29)`
+              body: `Your PR has not been linked to an issue. Pull request and issue need to be on the same repository. If you need to transfer an existing issue to this repository, please use [this guide](https://docs.github.com/en/issues/tracking-your-work-with-issues/transferring-an-issue-to-another-repository) Please link the corresponding issue in the sidebar or use [keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword) in your PR, then close and reopen the PR. For more information, refer to the GitHub principles and conventions defined in [Git & GitHub & GitFlow | Notion](https://www.notion.so/roclub/Git-GitHub-GitFlow-85cbb825be004d4d8b8ff6c0fa12204b)`
             })
       - name: Fail for No Linked Issue
         run: exit 1
