@@ -2,8 +2,7 @@ name: PR - Verify linked issue
 
 on:
   pull_request:
-    types: [edited, synchronize, opened, reopened]
-  workflow_dispatch:
+    types: [edited, opened, reopened]
 
 jobs:
   PR_verifyLinkedIssue:
