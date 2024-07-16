@@ -1,0 +1,23 @@
+# https://github.com/actions/stale
+name: 'PR - Close stale'
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+  
+jobs:
+  PR_close_stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@28ca1036281a5e5922ead5184a1bbf96e5fc984e # v9.0.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          days-before-stale: 10 # days to wait after an activity on a PR before the label "stale" is added
+          days-before-issue-stale: -1 # do not mark issues as stale, only PRs
+          days-before-close: 4 # days to wait before closing after marking as stale 
+          days-before-issue-close: -1 # do not close issues
+          stale-pr-label: 'stale'
+          exempt-draft-pr: true
+          stale-pr-message: 'Your pull request is marked as stale due to inactivity (_10 days_ without response ⏳ ).It will be closed in 4 days if no activity is recorded.'
+          close-pr-message: 'Your pull request is being closed due to inactivity (_14 days_ without response ⏳ ). If this pull request was automatically closed and you feel this pull request should be reopened, please create a new pull request and link back to this one.'
+          debug-only: false # dry-run
