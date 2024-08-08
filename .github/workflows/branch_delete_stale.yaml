@@ -1,0 +1,29 @@
+name: 'Branches - Remove stale'
+on:
+  schedule:
+    - cron: '0 5 * * 0' # At 05:00 AM, only on Sunday
+  workflow_dispatch:
+
+jobs:
+  branches_remove_stale:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+    - name: Remove stale branches
+      uses: fpicalausa/remove-stale-branches@8d7c410eb145f6f2daf40f2f7a8a249515a40f18 # v2.1.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        dry-run: false
+        exempt-organization: ''
+        exempt-branches-regex: '^(main|master)$'
+        exempt-authors-regex: ''
+        stale-branch-message: '@{author} Your branch {branchName} has not been updated in the last 60 days and is marked as stale. It will be removed in two weeks. If you want to keep this branch around, delete this comment or add new commits to this branch.' # comment on the last commit, tagging author of last commit
+        days-before-branch-stale: 59
+        days-before-branch-delete: 13
+        operations-per-run: 100
+        ignore-unknown-authors: false
+        default-recipient: ''
+        ignore-branches-with-open-prs: true
