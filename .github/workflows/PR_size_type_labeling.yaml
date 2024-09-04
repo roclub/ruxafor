@@ -1,0 +1,33 @@
+name: 'PR - Size & type labeling'
+
+on:
+  pull_request:
+
+jobs:
+  PR_size_labeler:
+    runs-on: ubuntu-latest
+    name: PR_size_labeler
+    steps:
+      - uses: codelytv/pr-size-labeler@56f6f0fc35c7cc0f72963b8467729e1120cb4bed #v1.10.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          xs_label: 'size/xs'
+          xs_max_size: '9'
+          s_label: 'size/s'
+          s_max_size: '99'
+          m_label: 'size/m'
+          m_max_size: '499'
+          l_label: 'size/l'
+          l_max_size: '999'
+          xl_label: 'size/xl'
+          fail_if_xl: 'false'
+          message_if_xl: ''
+          github_api_url: 'https://api.github.com'
+          files_to_ignore: ''
+  
+  PR_type_labeler:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: grafana/pr-labeler-action@50737759cb150f5d312de1a45559027156db8bab # 0.1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
