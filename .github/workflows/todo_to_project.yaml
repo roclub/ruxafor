@@ -1,4 +1,5 @@
-name: Sync TODO's to Project 
+# naming of workflow not adapted to avoid duplicates from renamed workflow in synced repositories
+name: 'Issue - Add TODO to issue'
 
 on:
   push:
