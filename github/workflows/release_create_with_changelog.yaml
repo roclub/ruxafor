@@ -1,0 +1,57 @@
+name: Release - Create with changelog
+
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
+
+jobs:
+  release_create_with_changelog:
+    name: Release pushed tag
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Create Release
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ github.ref_name }}
+      run: |
+        gh release create "$tag" \
+            --repo="$GITHUB_REPOSITORY" \
+            --title="${tag#v}" \
+            --generate-notes
+
+        gh release view ${tag} --repo="${GITHUB_REPOSITORY}" --json body --jq .body > notes.txt
+
+        sed -i -e '/^</ d' \
+          -e '/./ s/$/\\n\\n/; /^$/d' \
+          -e 's/## What'\''s Changed/# Changes/g' \
+          -e 's/### Breaking Changes/## Breaking Changes/g' \
+          -e 's/### Exiciting New Features/## Exiciting New Features/g' \
+          -e 's/### Bug Fixes Implemented/## Bug Fixes Implemented/g' \
+          -e 's/### Code Refactoring/## Code Refactoring/g' \
+          -e 's/### Repository Housekeeping/## Repository Housekeeping/g' \
+          -e 's/### Other Changes/## Other Changes/g' \
+          -e '/^\*\*Full Changelog\*\*/d' notes.txt
+
+        echo 'RELEASE_NOTES<<EOF' >> $GITHUB_OUTPUT
+        cat notes.txt >> $GITHUB_OUTPUT
+        echo 'EOF' >> $GITHUB_OUTPUT
+
+    - name: Post changelog to MS Teams
+      env:
+        RELEASE_NOTES: ${{ steps.create_release.outputs.RELEASE_NOTES }}
+        WEBHOOK_URL: ${{ secrets.TEAMS_RELEASE_WEBHOOK }}
+      run: |
+        curl --location '${{ env.WEBHOOK_URL }}' \
+        --header 'Content-Type: application/json' \
+        --data '{
+          "@type": "MessageCard",
+          "@context": "http://schema.org/extensions",
+          "themeColor": "0076D7",
+          "title": "'"$(echo $GITHUB_REPOSITORY | sed 's/roclub\///')"' - '"$GITHUB_REF_NAME"'",
+          "text": "'"$RELEASE_NOTES"'"
+        }'
