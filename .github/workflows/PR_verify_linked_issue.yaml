@@ -1,4 +1,4 @@
-name: PR - Verify linked issue
+name: 'PR - Verify linked issue'
 
 on:
   pull_request:
