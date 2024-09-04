@@ -1,0 +1,25 @@
+# belongs to .github/workflows/release_changelog.yaml
+
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+  categories:
+    - title: Breaking Changes 
+      labels:
+        - Semver-Major
+    - title: New Features 
+      labels:
+        - kind/feat
+    - title: Bugfixes Implemented
+      labels:
+        - kind/fix
+    - title: Code Refactoring
+      labels:
+        - kind/refactor
+    - title: Housekeeping
+      labels:
+        - kind/chore
+    - title: Other Changes
+      labels:
+        - kind/misc
