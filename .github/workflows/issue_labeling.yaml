@@ -1,4 +1,4 @@
-name: Issue Labeling for Project Management
+name: 'Issue - Initial labeling'
 
 on:
   issues:
