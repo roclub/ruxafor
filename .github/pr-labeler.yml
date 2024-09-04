@@ -1,0 +1,10 @@
+# config to .github/workflows/PR_size_type_labeling.yaml, second step grafana/pr-labeler-action
+add-missing-labels: true
+label-mapping:
+  kind/fix: [ 'fix' ]
+  kind/feat: [ 'feat' ]
+  kind/doc: [ 'docs' ]
+  kind/chore: [ 'chore' ]
+  kind/refactor: [ 'refactor' ]
+  kind/misc: [ 'docs','perf' ]
+  ignore-for-release: ['test']
