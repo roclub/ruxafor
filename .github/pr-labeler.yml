@@ -3,7 +3,6 @@ add-missing-labels: true
 label-mapping:
   kind/fix: [ 'fix' ]
   kind/feat: [ 'feat' ]
-  kind/doc: [ 'docs' ]
   kind/chore: [ 'chore' ]
   kind/refactor: [ 'refactor' ]
   kind/misc: [ 'docs','perf' ]
