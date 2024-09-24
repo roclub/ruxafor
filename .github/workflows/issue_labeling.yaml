@@ -23,7 +23,7 @@ jobs:
           NUMBER: ${{ github.event.issue.number }}
           # add new label with sperator: ,
           # no whitespaces
-          LABELS: triage/needed,time/needed
+          LABELS: time/needed
 
       - name: Add comment for instructions
         run: gh issue comment "$NUMBER" --body "$BODY"
@@ -34,8 +34,4 @@ jobs:
           BODY: >
             👋 Hello! Thanks for opening this issue.
 
-            To help us efficiently triage and prioritize this issue, we kindly ask the assignee to perform the following steps:
-
-            1. Accept Triage: Please add the tag triage/accepted to indicate that you've reviewed and accepted the triage for this issue.
-
-            2. Provide Time Estimation: Kindly estimate the time required to address this issue and add a corresponding tag such as time/XL (Extra Large) or time/S (Small) to indicate its scale. This will assist us in planning and allocating resources effectively.
+            To help us efficiently triage and prioritize this issue, we kindly ask the assignee to estimate the time required to address this issue and add a corresponding tag such as time/XL (Extra Large) or time/S (Small) to indicate its scale. This will assist us in planning and allocating resources effectively.
