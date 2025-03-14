@@ -1,0 +1,77 @@
+name: "\U0001FAA9 Feature Request"
+description: Create an issue for a new feature.
+labels: ["triage/needed", "time/needed"]
+type: feature
+projects: ["roclub/9"]
+body:
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: Provide a brief overview of the task and its objectives.
+      placeholder: Insert description here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Provide specific criteria the feature must fulfill.
+      value: "- [ ] Criterion 1\n- [ ] Criterion 2\n- [ ] Criterion 3\n- [ ] ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: architecture-diagrams
+    attributes:
+      label: Architecture Diagrams
+      description: Attach relevant architecture diagrams or provide links to them. 
+      placeholder: Insert links or descriptions here...
+    validations:
+      required: false
+
+  - type: textarea
+    id: payloads-url-endpoints
+    attributes:
+      label: Payloads/URL Endpoints
+      description: Define the payloads or API endpoints involved in this feature.
+      value: "**Endpoint**: `GET /example/endpoint`\n```json\n{\n  \"key\": \"value\"\n}\n```"
+    validations:
+      required: false
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Link dependencies to this feature.
+      placeholder: List related tasks or issues here...
+    validations:
+      required: false
+
+  - type: textarea
+    id: useful-links
+    attributes:
+      label: Useful Links
+      description: Links that can be helpful for implementing this feature.
+      value: "- [Documentation](URL)\n- [Design Spec](URL)"
+    validations:
+      required: false
+
+  - type: textarea
+    id: contacts
+    attributes:
+      label: Contacts
+      description: Mention relevant personnel for this feature.
+      value: "- **Person 1**: @GitHubUsername1\n- **Person 2**: @GitHubUsername2"
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Any other relevant information or context that might be useful for completing the task.
+      placeholder: Insert notes here...
+    validations:
+      required: false

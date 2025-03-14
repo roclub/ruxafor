@@ -1,0 +1,71 @@
+name: "\U0001F527 Bug Report"
+description: Create an issue for a bug report.
+labels: ["triage/needed", "time/needed"]
+type: bug
+projects: ["roclub/9"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description. Include version, if not most recent one.
+      placeholder: Insert here...
+    validations:
+      required: true
+  - type: dropdown
+    id: connector-version
+    attributes:
+      label: Connector Version
+      description: Indicate if this bug is related to a specific connector version.
+      options:
+        - n/a - no relation to connector version
+        - v1.0
+        - v1.2
+        - v2.0
+      default: 0
+    validations:
+      required: true
+  - type: dropdown
+    id: severity-classification
+    attributes:
+      label: Severity classification
+      description: Indicates if the bug causes or changes risks to patients. See [risk database](https://www.notion.so/roclub/01552c2bd23c4267a3e29a41780692c6?v=092725438261472eb711d26305a6e948)
+      options:
+        - low - No change to risks
+        - medium - May cause new or changed risks to patients which are acceptable
+        - high - Causes new or changed risks to patients which are unacceptable
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the behavior
+      placeholder: Insert here...
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: Expected behaviour
+      description: A clear and concise description of what you expected to happen
+      placeholder: Insert here...
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behaviour
+    attributes:
+      label: Actual behaviour
+      description: A clear and concise description of what actually happens
+      placeholder: Insert here...
+    validations:
+      required: true
+  - type: input
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here
+      placeholder: Insert here...
+    validations:
+      required: false
