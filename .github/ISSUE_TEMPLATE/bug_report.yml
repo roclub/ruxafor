@@ -16,13 +16,14 @@ body:
     id: connector-version
     attributes:
       label: Connector Version
-      description: Indicate if this bug is related to a specific connector version.
+      description: Indicate if this bug is related to a specific connector version. You can choose multiple entries.
       options:
         - n/a - no relation to connector version
         - v1.0
         - v1.2
         - v2.0
       default: 0
+      multiple: true
     validations:
       required: true
   - type: dropdown
