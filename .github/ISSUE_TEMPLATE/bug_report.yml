@@ -2,7 +2,7 @@ name: "\U0001F527 Bug Report"
 description: Create an issue for a bug report.
 labels: ["triage/needed", "time/needed"]
 type: bug
-projects: ["roclub/9"]
+projects: ["roclub/9", "roclub/21"]
 body:
   - type: textarea
     id: description

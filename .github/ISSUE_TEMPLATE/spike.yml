@@ -2,7 +2,7 @@ name: "\U0001F50D Spike"
 description: Create an issue for an investigation or evaluation.
 labels: ["triage/needed", "time/needed"]
 type: spike
-projects: ["roclub/9"]
+projects: ["roclub/9", "roclub/21"]
 body:
   - type: textarea
     id: description

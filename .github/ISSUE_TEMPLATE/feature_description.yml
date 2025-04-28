@@ -2,7 +2,7 @@ name: "\U0001FAA9 Feature Request"
 description: Create an issue for a new feature.
 labels: ["triage/needed", "time/needed"]
 type: feature
-projects: ["roclub/9"]
+projects: ["roclub/9", "roclub/21"]
 body:
   - type: textarea
     id: feature-description
