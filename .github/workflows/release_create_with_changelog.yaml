@@ -41,17 +41,51 @@ jobs:
         cat notes.txt >> $GITHUB_OUTPUT
         echo 'EOF' >> $GITHUB_OUTPUT
 
-    - name: Post changelog to MS Teams
-      env:
-        RELEASE_NOTES: ${{ steps.create_release.outputs.RELEASE_NOTES }}
-        WEBHOOK_URL: ${{ secrets.TEAMS_RELEASE_WEBHOOK }}
-      run: |
-        curl --location '${{ env.WEBHOOK_URL }}' \
-        --header 'Content-Type: application/json' \
-        --data '{
-          "@type": "MessageCard",
-          "@context": "http://schema.org/extensions",
-          "themeColor": "0076D7",
-          "title": "'"$(echo $GITHUB_REPOSITORY | sed 's/roclub\///')"' - '"$GITHUB_REF_NAME"'",
-          "text": "'"$RELEASE_NOTES"'"
-        }'
+  check-language:
+    runs-on: ubuntu-latest
+    outputs:
+      is_go: ${{ steps.check.outputs.is_go }}
+    steps:
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh -y
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check language
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: check-language
+        run: |
+          if [ "$(gh repo view --json primaryLanguage --jq '.primaryLanguage.name')" = "Go" ]; then
+            echo "is_go=true" >> $GITHUB_OUTPUT
+            echo "ISCOOL"
+          else
+            echo "is_go=false" >> $GITHUB_OUTPUT
+            echo "COOL"
+          fi
+
+
+  create_sbom_go:
+    name: Create SBOM for Go-Repositories
+    needs: check-language
+    if: ${{ needs.check-language.outputs.is_go }} == 'true'
+
+    permissions:
+     actions: read
+     contents: write
+
+    runs-on: ubuntu-22.04
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - uses: anchore/sbom-action@v0
+      with:
+        file: ./go.mod
+        artifact-name: ${{ github.event.repository.name }}-sbom.spdx
+
+    - uses: anchore/sbom-action/publish-sbom@v0
+      with:
+        sbom-artifact-match: ".*\\.spdx$"
