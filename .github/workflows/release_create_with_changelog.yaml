@@ -13,12 +13,16 @@ jobs:
     name: Release pushed tag
     runs-on: ubuntu-22.04
     steps:
+    - name: Install GitHub CLI
+      run: sudo apt-get update -y  && sudo apt-get install gh -y
+
     - name: Create Release
       id: create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ github.ref_name }}
       run: |
+
         gh release create "$tag" \
             --repo="$GITHUB_REPOSITORY" \
             --title="${tag#v}" \
@@ -47,7 +51,7 @@ jobs:
       is_go: ${{ steps.check.outputs.is_go }}
     steps:
       - name: Install GitHub CLI
-        run: sudo apt-get install gh -y
+        run: sudo apt-get update -y  && sudo apt-get install gh -y
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -59,17 +63,15 @@ jobs:
         run: |
           if [ "$(gh repo view --json primaryLanguage --jq '.primaryLanguage.name')" = "Go" ]; then
             echo "is_go=true" >> $GITHUB_OUTPUT
-            echo "ISCOOL"
           else
             echo "is_go=false" >> $GITHUB_OUTPUT
-            echo "COOL"
           fi
 
 
   create_sbom_go:
     name: Create SBOM for Go-Repositories
     needs: check-language
-    if: ${{ needs.check-language.outputs.is_go }} == 'true'
+    if: needs.check-language.outputs.is_go == 'true'
 
     permissions:
      actions: read
