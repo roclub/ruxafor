@@ -5,7 +5,8 @@ on:
     types: [edited, opened, reopened]
 
 jobs:
-  PR_verifyLinkedIssue:
+  pr_verify_linked_issue:
+    if: !startsWith(github.event.pull_request.title, 'chore')
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
